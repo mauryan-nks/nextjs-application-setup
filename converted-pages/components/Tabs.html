@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tabs Component</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    .tabs-list {
+      display: flex;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .tab-trigger {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: #6b7280;
+      border-bottom: 2px solid transparent;
+      user-select: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-trigger.active {
+      border-color: #3b82f6;
+      color: #1e40af;
+    }
+    .tab-content {
+      display: none;
+      padding-top: 1rem;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="tabs-list" role="tablist" aria-label="Tabs">
+      <button class="tab-trigger active" role="tab" aria-selected="true" aria-controls="tab1" id="tab1-btn">Tab 1</button>
+      <button class="tab-trigger" role="tab" aria-selected="false" aria-controls="tab2" id="tab2-btn">Tab 2</button>
+      <button class="tab-trigger" role="tab" aria-selected="false" aria-controls="tab3" id="tab3-btn">Tab 3</button>
+    </div>
+    <div id="tab1" class="tab-content active" role="tabpanel" aria-labelledby="tab1-btn">
+      <p>Content for Tab 1</p>
+    </div>
+    <div id="tab2" class="tab-content" role="tabpanel" aria-labelledby="tab2-btn">
+      <p>Content for Tab 2</p>
+    </div>
+    <div id="tab3" class="tab-content" role="tabpanel" aria-labelledby="tab3-btn">
+      <p>Content for Tab 3</p>
+    </div>
+  </div>
+
+  <script>
+    const tabTriggers = document.querySelectorAll('.tab-trigger');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabTriggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        tabTriggers.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tabContents.forEach(c => c.classList.remove('active'));
+
+        trigger.classList.add('active');
+        trigger.setAttribute('aria-selected', 'true');
+        const target = trigger.getAttribute('aria-controls');
+        document.getElementById(target).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
