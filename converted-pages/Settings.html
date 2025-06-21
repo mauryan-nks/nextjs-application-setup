@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OEM Order Analytics - Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Tabs styles */
+    .tabs-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 40rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .tabs-trigger {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-weight: 600;
+      color: #6b7280;
+      user-select: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tabs-trigger.active {
+      border-color: #3b82f6;
+      color: #1e40af;
+    }
+    .tabs-content {
+      display: none;
+      padding-top: 1rem;
+    }
+    .tabs-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">Settings</h1>
+
+    <div>
+      <div class="tabs-list" role="tablist" aria-label="Settings Tabs">
+        <button class="tabs-trigger active" role="tab" aria-selected="true" aria-controls="profileTab" id="profileTabBtn">
+          <!-- User icon SVG -->
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a7.5 7.5 0 0113 0"/></svg>
+          <span class="hidden sm:inline">Profile</span>
+        </button>
+        <button class="tabs-trigger" role="tab" aria-selected="false" aria-controls="passwordTab" id="passwordTabBtn">
+          <!-- KeyRound icon SVG -->
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 7a4 4 0 00-8 0v4H5v6h14v-6h-2V7z"/></svg>
+          <span class="hidden sm:inline">Password</span>
+        </button>
+        <button class="tabs-trigger" role="tab" aria-selected="false" aria-controls="notificationsTab" id="notificationsTabBtn">
+          <!-- Bell icon SVG -->
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          <span class="hidden sm:inline">Notifications</span>
+        </button>
+        <button class="tabs-trigger" role="tab" aria-selected="false" aria-controls="appearanceTab" id="appearanceTabBtn">
+          <!-- Palette icon SVG -->
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="7.5" cy="10.5" r="1.5"/><circle cx="16.5" cy="10.5" r="1.5"/><circle cx="12" cy="16.5" r="1.5"/></svg>
+          <span class="hidden sm:inline">Appearance</span>
+        </button>
+      </div>
+
+      <div id="profileTab" class="tabs-content active" role="tabpanel" aria-labelledby="profileTabBtn">
+        <form id="profileForm" class="space-y-4 mt-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="name" class="block mb-1 font-medium">Full Name</label>
+              <input type="text" id="name" name="name" placeholder="Your full name" class="w-full border border-gray-300 rounded-md px-3 py-2" />
+            </div>
+            <div>
+              <label for="email" class="block mb-1 font-medium">Email Address</label>
+              <input type="email" id="email" name="email" placeholder="your.email@example.com" class="w-full border border-gray-300 rounded-md px-3 py-2" />
+            </div>
+            <div>
+              <label for="phone" class="block mb-1 font-medium">Phone Number</label>
+              <input type="text" id="phone" name="phone" placeholder="Your phone number" class="w-full border border-gray-300 rounded-md px-3 py-2" />
+            </div>
+            <div>
+              <label for="company" class="block mb-1 font-medium">Company</label>
+              <input type="text" id="company" name="company" placeholder="Your company name" class="w-full border border-gray-300 rounded-md px-3 py-2" />
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="bg-blue-600 text-white rounded-md px-4 py-2 font-semibold hover:bg-blue-700">Save Profile</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="passwordTab" class="tabs-content" role="tabpanel" aria-labelledby="passwordTabBtn">
+        <form id="passwordForm" class="space-y-4 mt-4">
+          <div>
+            <label for="currentPassword" class="block mb-1 font-medium">Current Password</label>
+            <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter your current password" class="w-full border border-gray-300 rounded-md px-3 py-2" />
+          </div>
+          <div>
+            <label for="newPassword" class="block mb-1 font-medium">New Password</label>
+            <input type="password" id="newPassword" name="newPassword" placeholder="Enter your new password" class="w-full border border-gray-300 rounded-md px-3 py-2" />
+          </div>
+          <div>
+            <label for="confirmPassword" class="block mb-1 font-medium">Confirm New Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your new password" class="w-full border border-gray-300 rounded-md px-3 py-2" />
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="bg-blue-600 text-white rounded-md px-4 py-2 font-semibold hover:bg-blue-700">Update Password</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="notificationsTab" class="tabs-content" role="tabpanel" aria-labelledby="notificationsTabBtn">
+        <div class="space-y-6 mt-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <label for="emailAlerts" class="block font-medium">Email Alerts</label>
+              <p class="text-sm text-gray-600">Receive important notifications via email</p>
+            </div>
+            <input type="checkbox" id="emailAlerts" checked />
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <label for="orderUpdates" class="block font-medium">Order Updates</label>
+              <p class="text-sm text-gray-600">Get notified when order status changes</p>
+            </div>
+            <input type="checkbox" id="orderUpdates" checked />
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <label for="weeklyReport" class="block font-medium">Weekly Report</label>
+              <p class="text-sm text-gray-600">Receive a weekly summary of your analytics</p>
+            </div>
+            <input type="checkbox" id="weeklyReport" />
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <label for="systemAnnouncements" class="block font-medium">System Announcements</label>
+              <p class="text-sm text-gray-600">Important updates about the platform</p>
+            </div>
+            <input type="checkbox" id="systemAnnouncements" checked />
+          </div>
+          <div class="flex justify-end">
+            <button id="saveNotificationsBtn" class="bg-blue-600 text-white rounded-md px-4 py-2 font-semibold hover:bg-blue-700">Save Preferences</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="appearanceTab" class="tabs-content" role="tabpanel" aria-labelledby="appearanceTabBtn">
+        <div class="space-y-6 mt-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <label for="darkMode" class="block font-medium">Dark Mode</label>
+              <p class="text-sm text-gray-600">Switch to dark theme</p>
+            </div>
+            <input type="checkbox" id="darkMode" />
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <label for="compactView" class="block font-medium">Compact View</label>
+              <p class="text-sm text-gray-600">Show more data in a compact format</p>
+            </div>
+            <input type="checkbox" id="compactView" />
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <label for="highContrast" class="block font-medium">High Contrast</label>
+              <p class="text-sm text-gray-600">Increase visibility with high contrast mode</p>
+            </div>
+            <input type="checkbox" id="highContrast" />
+          </div>
+          <div class="flex justify-end">
+            <button id="saveAppearanceBtn" class="bg-blue-600 text-white rounded-md px-4 py-2 font-semibold hover:bg-blue-700">Save Appearance</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="adminSettings" class="mt-6 hidden">
+        <div class="bg-white rounded-lg shadow p-6 text-center">
+          <h2 class="text-xl font-semibold mb-2">Advanced Settings</h2>
+          <p class="mb-4">Administrator-only settings for system configuration</p>
+          <button id="manageUsersBtn" class="bg-blue-600 text-white rounded-md px-4 py-2 font-semibold hover:bg-blue-700">Manage Users</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tabs functionality
+    const tabs = document.querySelectorAll('.tabs-trigger');
+    const tabContents = document.querySelectorAll('.tabs-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tabContents.forEach(tc => tc.classList.remove('active'));
+
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        const target = tab.getAttribute('aria-controls');
+        document.getElementById(target).classList.add('active');
+      });
+    });
+
+    // Simulated user data
+    const user = {
+      role: 'admin', // Change to 'oem' or other to test
+      name: 'John Doe',
+      email: 'john@example.com'
+    };
+
+    // Populate profile form with user data
+    document.getElementById('name').value = user.name;
+    document.getElementById('email').value = user.email;
+
+    // Show admin settings if user is admin
+    if (user.role === 'admin') {
+      document.getElementById('adminSettings').classList.remove('hidden');
+    }
+
+    // Form submission handlers
+    document.getElementById('profileForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Profile updated successfully.');
+    });
+
+    document.getElementById('passwordForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      if (newPassword !== confirmPassword) {
+        alert('New password and confirmation do not match.');
+        return;
+      }
+      alert('Password updated successfully.');
+      e.target.reset();
+    });
+
+    document.getElementById('saveNotificationsBtn').addEventListener('click', () => {
+      alert('Notification preferences saved.');
+    });
+
+    document.getElementById('saveAppearanceBtn').addEventListener('click', () => {
+      alert('Appearance settings saved.');
+    });
+
+    document.getElementById('manageUsersBtn').addEventListener('click', () => {
+      alert('Navigate to Manage Users page.');
+    });
+  </script>
+</body>
+</html>
