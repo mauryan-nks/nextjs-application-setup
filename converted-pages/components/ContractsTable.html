@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contracts Table Component</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 0.5rem;
+      max-width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body class="bg-white p-4">
+  <div class="border rounded-md overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200" id="contractsTable">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="w-[50px]"></th>
+          <th class="px-6 py-3 text-left font-semibold">Contract #</th>
+          <th class="px-6 py-3 text-left font-semibold">Date</th>
+          <th class="px-6 py-3 text-left font-semibold">Brand</th>
+          <th class="px-6 py-3 text-left font-semibold">Status</th>
+          <th class="px-6 py-3 text-left font-semibold">Type</th>
+          <th class="px-6 py-3 text-left font-semibold">Bid #</th>
+          <th class="px-6 py-3 text-left font-semibold">Value</th>
+          <th class="px-6 py-3 text-right font-semibold">Details</th>
+        </tr>
+      </thead>
+      <tbody id="contractsTableBody" class="divide-y divide-gray-200">
+        <!-- Rows dynamically populated -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal for contract details -->
+  <div id="contractModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contractModalTitle">
+    <div class="modal-content">
+      <button id="closeModalBtn" class="float-right text-gray-600 hover:text-gray-900 text-2xl font-bold">&times;</button>
+      <h2 id="contractModalTitle" class="text-2xl font-bold mb-4">Contract Details</h2>
+      <div id="contractModalContent">
+        <!-- Contract details dynamically populated -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample contract data
+    const contractsData = [
+      {
+        contractNumber: "CN-001",
+        contractDate: "2023-05-15",
+        brand: "Brand A",
+        contractStatus: "Completed",
+        procurementType: "Bid",
+        bidNumber: "BID-123",
+        contractValue: 500000,
+        buyer: {
+          buyerName: "Buyer One",
+          organizationName: "Org One",
+          buyerEmail: "buyer1@example.com",
+          buyerContactNumber: "1234567890",
+          ministry: "Ministry A",
+          department: "Department A"
+        },
+        seller: {
+          sellerName: "Seller One",
+          gstNumber: "GST123456",
+          verifiedStatus: "Verified",
+          email: "seller1@example.com",
+          address: "123 Seller St"
+        },
+        consignee: {
+          consigneeName: "Consignee One",
+          consigneeEmail: "consignee1@example.com",
+          consigneeContactNumber: "0987654321",
+          consigneeAddress: "456 Consignee Ave"
+        },
+        product: {
+          productName: "Product A",
+          productModel: "Model X",
+          categoryName: "Category 1",
+          quantity: 100,
+          unitPrice: 5000,
+          catalogueStatus: "Active"
+        }
+      },
+      // Add more sample contracts as needed
+    ];
+
+    const contractsTableBody = document.getElementById('contractsTableBody');
+    const contractModal = document.getElementById('contractModal');
+    const contractModalContent = document.getElementById('contractModalContent');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Track expanded rows
+    const expandedRows = new Set();
+
+    function formatDate(dateStr) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateStr).toLocaleDateString(undefined, options);
+    }
+
+    function createRow(contract) {
+      const tr = document.createElement('tr');
+
+      // Expand/collapse button cell
+      const expandTd = document.createElement('td');
+      expandTd.className = "px-3";
+      const expandBtn = document.createElement('button');
+      expandBtn.className = "text-gray-600 hover:text-gray-900";
+      expandBtn.innerHTML = expandedRows.has(contract.contractNumber) ? '&#9650;' : '&#9660;';
+      expandBtn.addEventListener('click', () => {
+        if (expandedRows.has(contract.contractNumber)) {
+          expandedRows.delete(contract.contractNumber);
+        } else {
+          expandedRows.add(contract.contractNumber);
+        }
+        renderTable();
+      });
+      expandTd.appendChild(expandBtn);
+      tr.appendChild(expandTd);
+
+      // Contract number
+      const contractNumTd = document.createElement('td');
+      contractNumTd.className = "px-6 py-2";
+      contractNumTd.textContent = contract.contractNumber;
+      tr.appendChild(contractNumTd);
+
+      // Date
+      const dateTd = document.createElement('td');
+      dateTd.className = "px-6 py-2";
+      dateTd.textContent = formatDate(contract.contractDate);
+      tr.appendChild(dateTd);
+
+      // Brand
+      const brandTd = document.createElement('td');
+      brandTd.className = "px-6 py-2";
+      brandTd.textContent = contract.brand;
+      tr.appendChild(brandTd);
+
+      // Status
+      const statusTd = document.createElement('td');
+      statusTd.className = "px-6 py-2";
+      const statusSpan = document.createElement('span');
+      statusSpan.className = "px-2 py-1 rounded-full text-xs font-medium ";
+      switch(contract.contractStatus) {
+        case "Completed":
+          statusSpan.classList.add("bg-green-100", "text-green-800");
+          break;
+        case "Pending":
+          statusSpan.classList.add("bg-yellow-100", "text-yellow-800");
+          break;
+        case "Fulfillment in Progress":
+          statusSpan.classList.add("bg-blue-100", "text-blue-800");
+          break;
+        default:
+          statusSpan.classList.add("bg-red-100", "text-red-800");
+      }
+      statusSpan.textContent = contract.contractStatus;
+      statusTd.appendChild(statusSpan);
+      tr.appendChild(statusTd);
+
+      // Type
+      const typeTd = document.createElement('td');
+      typeTd.className = "px-6 py-2";
+      typeTd.textContent = contract.procurementType;
+      tr.appendChild(typeTd);
+
+      // Bid #
+      const bidTd = document.createElement('td');
+      bidTd.className = "px-6 py-2";
+      if (contract.procurementType.toLowerCase() === "bid" && contract.bidNumber) {
+        const bidSpan = document.createElement('span');
+        bidSpan.className = "text-blue-600 font-medium";
+        bidSpan.textContent = contract.bidNumber;
+        bidTd.appendChild(bidSpan);
+      } else {
+        const dashSpan = document.createElement('span');
+        dashSpan.className = "text-gray-400 text-sm";
+        dashSpan.textContent = "-";
+        bidTd.appendChild(dashSpan);
+      }
+      tr.appendChild(bidTd);
+
+      // Value
+      const valueTd = document.createElement('td');
+      valueTd.className = "px-6 py-2";
+      valueTd.textContent = `₹${contract.contractValue.toLocaleString()}`;
+      tr.appendChild(valueTd);
+
+      // Details button
+      const detailsTd = document.createElement('td');
+      detailsTd.className = "px-6 py-2 text-right";
+      const detailsBtn = document.createElement('button');
+      detailsBtn.className = "text-blue-600 hover:underline";
+      detailsBtn.textContent = "View";
+      detailsBtn.addEventListener('click', () => {
+        openModal(contract);
+      });
+      detailsTd.appendChild(detailsBtn);
+      tr.appendChild(detailsTd);
+
+      return tr;
+    }
+
+    function createExpandedRow(contract) {
+      const tr = document.createElement('tr');
+      tr.className = "bg-gray-50";
+
+      const td = document.createElement('td');
+      td.colSpan = 9;
+      td.className = "p-4";
+
+      const container = document.createElement('div');
+      container.className = "grid grid-cols-1 md:grid-cols-3 gap-6";
+
+      // Product Details
+      const productDiv = document.createElement('div');
+      productDiv.innerHTML = `
+        <h3 class="text-sm font-medium mb-2">Product Details</h3>
+        <div class="space-y-2 text-sm">
+          <div><span class="font-medium">Product Name:</span> ${contract.product.productName}</div>
+          <div><span class="font-medium">Model:</span> ${contract.product.productModel}</div>
+          <div><span class="font-medium">Category:</span> ${contract.product.categoryName}</div>
+          <div><span class="font-medium">Quantity:</span> ${contract.product.quantity}</div>
+          <div><span class="font-medium">Unit Price:</span> ₹${contract.product.unitPrice.toLocaleString()}</div>
+          <div><span class="font-medium">Catalogue Status:</span> ${contract.product.catalogueStatus}</div>
+        </div>
+      `;
+      container.appendChild(productDiv);
+
+      // Buyer Details
+      const buyerDiv = document.createElement('div');
+      buyerDiv.innerHTML = `
+        <h3 class="text-sm font-medium mb-2">Buyer</h3>
+        <div class="space-y-2 text-sm">
+          <div><span class="font-medium">Name:</span> ${contract.buyer.buyerName}</div>
+          <div><span class="font-medium">Organization:</span> ${contract.buyer.organizationName}</div>
+          <div><span class="font-medium">Ministry:</span> ${contract.buyer.ministry || "N/A"}</div>
+          <div><span class="font-medium">Department:</span> ${contract.buyer.department || "N/A"}</div>
+          ${contract.procurementType.toLowerCase() === "bid" && contract.bidNumber ? `<div><span class="font-medium">Bid Number:</span> <span class="text-blue-600 font-medium">${contract.bidNumber}</span></div>` : ""}
+        </div>
+      `;
+      container.appendChild(buyerDiv);
+
+      // Seller Details
+      const sellerDiv = document.createElement('div');
+      sellerDiv.innerHTML = `
+        <h3 class="text-sm font-medium mb-2">Seller</h3>
+        <div class="space-y-2 text-sm">
+          <div><span class="font-medium">Name:</span> ${contract.seller.sellerName}</div>
+          <div><span class="font-medium">Address:</span> ${contract.seller.address}</div>
+          <div><span class="font-medium">Status:</span> ${contract.seller.verifiedStatus}</div>
+        </div>
+      `;
+      container.appendChild(sellerDiv);
+
+      td.appendChild(container);
+      tr.appendChild(td);
+      return tr;
+    }
+
+    function openModal(contract) {
+      contractModalContent.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-lg font-medium mb-2">Contract Information</h3>
+            <div class="space-y-2">
+              <div><span class="font-medium">Contract Number:</span> ${contract.contractNumber}</div>
+              <div><span class="font-medium">Date:</span> ${formatDate(contract.contractDate)}</div>
+              <div><span class="font-medium">Status:</span> ${contract.contractStatus}</div>
+              <div><span class="font-medium">Type:</span> ${contract.procurementType}</div>
+              ${contract.procurementType.toLowerCase() === "bid" && contract.bidNumber ? `<div><span class="font-medium">Bid Number:</span> <span class="text-blue-600 font-medium">${contract.bidNumber}</span></div>` : ""}
+              <div><span class="font-medium">Value:</span> ₹${contract.contractValue.toLocaleString()}</div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium mb-2">Buyer Details</h3>
+            <div class="space-y-2">
+              <div><span class="font-medium">Name:</span> ${contract.buyer.buyerName}</div>
+              <div><span class="font-medium">Organization:</span> ${contract.buyer.organizationName}</div>
+              <div><span class="font-medium">Email:</span> ${contract.buyer.buyerEmail}</div>
+              <div><span class="font-medium">Phone:</span> ${contract.buyer.buyerContactNumber}</div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium mb-2">Seller Details</h3>
+            <div class="space-y-2">
+              <div><span class="font-medium">Name:</span> ${contract.seller.sellerName}</div>
+              <div><span class="font-medium">GST:</span> ${contract.seller.gstNumber}</div>
+              <div><span class="font-medium">Verification:</span> ${contract.seller.verifiedStatus}</div>
+              <div><span class="font-medium">Email:</span> ${contract.seller.email}</div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium mb-2">Consignee Details</h3>
+            <div class="space-y-2">
+              <div><span class="font-medium">Name:</span> ${contract.consignee.consigneeName}</div>
+              <div><span class="font-medium">Email:</span> ${contract.consignee.consigneeEmail}</div>
+              <div><span class="font-medium">Phone:</span> ${contract.consignee.consigneeContactNumber}</div>
+              <div><span class="font-medium">Address:</span> ${contract.consignee.consigneeAddress}</div>
+            </div>
+          </div>
+        </div>
+      `;
+      contractModal.style.display = 'block';
+    }
+
+    function renderTable() {
+      contractsTableBody.innerHTML = '';
+      contractsData.forEach(contract => {
+        contractsTableBody.appendChild(createRow(contract));
+        if (expandedRows.has(contract.contractNumber)) {
+          contractsTableBody.appendChild(createExpandedRow(contract));
+        }
+      });
+    }
+
+    closeModalBtn.addEventListener('click', () => {
+      contractModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === contractModal) {
+        contractModal.style.display = 'none';
+      }
+    });
+
+    renderTable();
+  </script>
+</body>
+</html>
