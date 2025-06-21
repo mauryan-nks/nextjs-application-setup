@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OEM Order Analytics - User Analytics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto p-6">
+    <!-- Access check placeholder -->
+    <div id="accessDenied" class="hidden max-w-2xl mx-auto text-center space-y-8">
+      <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center">
+        <!-- Lock icon SVG -->
+        <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900">Competitor Analytics</h1>
+      <p class="text-lg text-gray-600">Unlock powerful market insights and competitive intelligence</p>
+
+      <div class="text-left bg-white rounded-lg shadow p-6">
+        <h2 class="flex items-center gap-2 text-lg font-semibold mb-2">
+          <!-- BarChart3 icon SVG -->
+          <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M9 17v-6"/><path d="M13 17v-4"/><path d="M17 17v-2"/></svg>
+          Premium Analytics Features
+        </h2>
+        <p class="text-sm text-gray-600 mb-4">Get detailed insights into your market performance and competition</p>
+        <ul class="space-y-3 mb-4">
+          <li class="flex items-start gap-3">
+            <div class="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+            <div>
+              <h4 class="font-medium">Market Share Analysis</h4>
+              <p class="text-sm text-gray-600">See your position vs competitors</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+            <div>
+              <h4 class="font-medium">Revenue Comparison</h4>
+              <p class="text-sm text-gray-600">Compare performance metrics</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+            <div>
+              <h4 class="font-medium">Geographic Analysis</h4>
+              <p class="text-sm text-gray-600">State-wise market insights</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+            <div>
+              <h4 class="font-medium">Category Intelligence</h4>
+              <p class="text-sm text-gray-600">Category-specific analytics</p>
+            </div>
+          </li>
+        </ul>
+        <div class="border-t pt-4 flex items-center justify-between">
+          <div>
+            <p class="font-medium">Access Required</p>
+            <p class="text-sm text-gray-600">Contact admin for premium analytics access</p>
+          </div>
+          <button id="requestAccessBtn" class="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700">Request Access</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics content -->
+    <div id="analyticsContent" class="hidden space-y-8">
+      <header class="flex justify-between items-center">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+          <!-- Eye icon SVG -->
+          <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          Market Intelligence
+        </h1>
+        <div class="text-right">
+          <span class="inline-block bg-green-100 text-green-800 rounded-full px-3 py-1 text-sm font-semibold">Premium Access Enabled</span>
+        </div>
+      </header>
+
+      <section class="rounded-lg border bg-white shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-4">Select Category for Analysis</h2>
+        <div class="flex items-center gap-4">
+          <select id="categorySelect" class="w-64 border border-gray-300 rounded-md px-3 py-2">
+            <option value="">Select a category</option>
+            <!-- Options dynamically populated -->
+          </select>
+          <p id="categoryCount" class="text-sm text-gray-600"></p>
+        </div>
+      </section>
+
+      <section id="competitorAnalytics" class="mt-6">
+        <!-- Competitor analytics content will be rendered here -->
+      </section>
+
+      <section id="selectCategoryPrompt" class="hidden rounded-lg border bg-white shadow-sm p-6 text-center py-12">
+        <svg class="h-12 w-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 3v18h18"/></svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Select a Category</h3>
+        <p class="text-gray-600">Choose a product category above to start analyzing your competitive position</p>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Simulated user data and access
+    const hasAnalyticsAccess = true; // Change to false to test access denied
+    const userBrand = "Brand A";
+    const availableCategories = ["Category 1", "Category 2", "Category 3"];
+
+    const accessDenied = document.getElementById('accessDenied');
+    const analyticsContent = document.getElementById('analyticsContent');
+    const categorySelect = document.getElementById('categorySelect');
+    const categoryCount = document.getElementById('categoryCount');
+    const competitorAnalytics = document.getElementById('competitorAnalytics');
+    const selectCategoryPrompt = document.getElementById('selectCategoryPrompt');
+    const requestAccessBtn = document.getElementById('requestAccessBtn');
+
+    if (!hasAnalyticsAccess) {
+      accessDenied.classList.remove('hidden');
+    } else {
+      analyticsContent.classList.remove('hidden');
+      categoryCount.textContent = `${availableCategories.length} categories available for your brand`;
+      availableCategories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+      });
+    }
+
+    categorySelect.addEventListener('change', () => {
+      const selectedCategory = categorySelect.value;
+      if (selectedCategory) {
+        selectCategoryPrompt.classList.add('hidden');
+        competitorAnalytics.innerHTML = `<p>Showing analytics for category: <strong>${selectedCategory}</strong></p>`;
+      } else {
+        competitorAnalytics.innerHTML = '';
+        selectCategoryPrompt.classList.remove('hidden');
+      }
+    });
+
+    requestAccessBtn.addEventListener('click', () => {
+      alert('Access request sent to administrator.');
+    });
+  </script>
+</body>
+</html>
