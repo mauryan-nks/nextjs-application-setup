@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analytics Charts Component</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-white p-4">
+  <div class="space-y-8">
+    <!-- Monthly Order Value -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="rounded-lg border shadow p-4">
+        <h3 class="text-lg font-semibold mb-2 flex justify-between items-center">
+          Monthly Order Value
+          <span id="monthlyTotal" class="text-sm text-gray-500"></span>
+        </h3>
+        <canvas id="monthlyOrderChart" height="200"></canvas>
+      </div>
+
+      <div class="rounded-lg border shadow p-4">
+        <h3 class="text-lg font-semibold mb-2 flex justify-between items-center">
+          Quarterly Performance
+          <span id="quarterlyTotal" class="text-sm text-gray-500"></span>
+        </h3>
+        <canvas id="quarterlyChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Order Status Distribution & Procurement Type Comparison -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="rounded-lg border shadow p-4">
+        <h3 class="text-lg font-semibold mb-2">Order Status Distribution</h3>
+        <canvas id="orderStatusChart" height="200"></canvas>
+      </div>
+
+      <div class="rounded-lg border shadow p-4">
+        <h3 class="text-lg font-semibold mb-2">Procurement Type Comparison</h3>
+        <canvas id="procurementTypeChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Top Sellers & Brand Performance -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="rounded-lg border shadow p-4">
+        <h3 class="text-lg font-semibold mb-2">Top Sellers</h3>
+        <canvas id="topSellersChart" height="200"></canvas>
+      </div>
+
+      <div class="rounded-lg border shadow p-4">
+        <h3 class="text-lg font-semibold mb-2">Brand Performance</h3>
+        <canvas id="brandPerformanceChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample data - replace with dynamic data as needed
+    const monthlyOrderData = [
+      { month: 'Jan 2023', value: 50000 },
+      { month: 'Feb 2023', value: 70000 },
+      { month: 'Mar 2023', value: 60000 },
+      { month: 'Apr 2023', value: 80000 },
+      { month: 'May 2023', value: 75000 },
+      { month: 'Jun 2023', value: 90000 },
+    ];
+
+    const quarterlyData = [
+      { quarter: 'Q1 2023', value: 180000 },
+      { quarter: 'Q2 2023', value: 245000 },
+    ];
+
+    const orderStatusData = {
+      labels: ['Completed', 'Pending', 'Fulfillment in Progress', 'Cancellation Requested'],
+      datasets: [{
+        label: 'Contracts',
+        data: [120, 30, 20, 10],
+        backgroundColor: ['#10B981', '#F97316', '#0EA5E9', '#D946EF'],
+      }]
+    };
+
+    const procurementTypeData = {
+      labels: ['Direct Order', 'Bid Order'],
+      datasets: [{
+        label: 'Order Value',
+        data: [150000, 95000],
+        backgroundColor: ['#6366F1', '#F97316'],
+      }]
+    };
+
+    const topSellersData = {
+      labels: ['Seller A', 'Seller B', 'Seller C', 'Seller D', 'Seller E'],
+      datasets: [{
+        label: 'Order Value',
+        data: [50000, 40000, 35000, 30000, 25000],
+        backgroundColor: '#8b5cf6',
+      }]
+    };
+
+    const brandPerformanceData = {
+      labels: ['Brand A', 'Brand B', 'Brand C', 'Brand D', 'Brand E', 'Brand F'],
+      datasets: [
+        {
+          label: 'Total Value',
+          data: [120000, 90000, 85000, 70000, 65000, 60000],
+          backgroundColor: '#6366F1',
+        },
+        {
+          label: 'Order Count',
+          data: [30, 25, 20, 18, 15, 12],
+          backgroundColor: '#D946EF',
+        }
+      ]
+    };
+
+    // Monthly Order Value Chart (Area)
+    const monthlyCtx = document.getElementById('monthlyOrderChart').getContext('2d');
+    const monthlyTotal = monthlyOrderData.reduce((sum, item) => sum + item.value, 0);
+    document.getElementById('monthlyTotal').textContent = `Total: ₹${monthlyTotal.toLocaleString()}`;
+    const monthlyOrderChart = new Chart(monthlyCtx, {
+      type: 'line',
+      data: {
+        labels: monthlyOrderData.map(d => d.month),
+        datasets: [{
+          label: 'Order Value',
+          data: monthlyOrderData.map(d => d.value),
+          fill: true,
+          backgroundColor: 'rgba(139,92,246,0.3)',
+          borderColor: '#8b5cf6',
+          tension: 0.3,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { callback: val => `₹${val.toLocaleString()}` } }
+        }
+      }
+    });
+
+    // Quarterly Performance Chart (Bar)
+    const quarterlyCtx = document.getElementById('quarterlyChart').getContext('2d');
+    const quarterlyTotal = quarterlyData.reduce((sum, item) => sum + item.value, 0);
+    document.getElementById('quarterlyTotal').textContent = `Total: ₹${quarterlyTotal.toLocaleString()}`;
+    const quarterlyChart = new Chart(quarterlyCtx, {
+      type: 'bar',
+      data: {
+        labels: quarterlyData.map(d => d.quarter),
+        datasets: [{
+          label: 'Order Value',
+          data: quarterlyData.map(d => d.value),
+          backgroundColor: '#6366F1',
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { callback: val => `₹${val.toLocaleString()}` } }
+        }
+      }
+    });
+
+    // Order Status Distribution Chart (Pie)
+    const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+    const orderStatusChart = new Chart(orderStatusCtx, {
+      type: 'pie',
+      data: orderStatusData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed} contracts` } }
+        }
+      }
+    });
+
+    // Procurement Type Comparison Chart (Doughnut)
+    const procurementTypeCtx = document.getElementById('procurementTypeChart').getContext('2d');
+    const procurementTypeChart = new Chart(procurementTypeCtx, {
+      type: 'doughnut',
+      data: procurementTypeData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: { callbacks: { label: ctx => `${ctx.label}: ₹${ctx.parsed.toLocaleString()}` } }
+        }
+      }
+    });
+
+    // Top Sellers Chart (Bar)
+    const topSellersCtx = document.getElementById('topSellersChart').getContext('2d');
+    const topSellersChart = new Chart(topSellersCtx, {
+      type: 'bar',
+      data: topSellersData,
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => `₹${ctx.parsed.x.toLocaleString()}` } }
+        },
+        scales: {
+          x: { beginAtZero: true, ticks: { callback: val => `₹${val.toLocaleString()}` } }
+        }
+      }
+    });
+
+    // Brand Performance Chart (Bar)
+    const brandPerformanceCtx = document.getElementById('brandPerformanceChart').getContext('2d');
+    const brandPerformanceChart = new Chart(brandPerformanceCtx, {
+      type: 'bar',
+      data: brandPerformanceData,
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: { callbacks: { label: ctx => ctx.dataset.label === 'Total Value' ? `₹${ctx.parsed.x.toLocaleString()}` : ctx.parsed.x } }
+        },
+        scales: {
+          x: { beginAtZero: true, ticks: { callback: val => val.toLocaleString() } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
